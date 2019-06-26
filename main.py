@@ -52,7 +52,7 @@ def profile(email_address):
 	data['pro_pic'] = 'profiles/' + data['id'] + '/' + data['id'] + '_profile_pic.png'
 	dir_path = os.path.dirname(os.path.realpath(__file__))
 	try:
-		open(dir_path + '\\static\\profiles\\' + data['id'] + '\\' + data['id'] + '_profile_pic.png')
+		open(dir_path + '/static/profiles/' + data['id'] + '/' + data['id'] + '_profile_pic.png')
 	except Exception as e:
 		data['pro_pic'] = 'profiles/default/default_profile_pic.png'
 	
