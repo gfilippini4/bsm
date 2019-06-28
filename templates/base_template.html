@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    {% block head %}
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<title>Basic Social Media Site</title>
+	<link rel="icon" href="{{url_for('static', filename='favicon.png')}}">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<style>
+	.col-lg-3 {background-color: lightgray;}
+    </style>
+    {% endblock %}
+</head>
+<body onload="myFunction()">
+	<div style="background:url('{{url_for('static',filename='wood.jfif')}}')">
+		<div class="container" style="background-color:white; width:90%; max-width:1920px;height:auto;">
+			<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			  <a class="navbar-brand" href="" id="BSMS_nav">BSMS</a>
+			  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			  </button>
+			  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+				  <li class="nav-item active">
+					<a class="nav-link" href="" id="home_nav">Home <span class="sr-only">(current)</span></a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="#">Link</a>
+				  </li>
+				  <li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					  Account Options
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					  <a class="dropdown-item" href="/logout">Log Out</a>
+					  <a class="dropdown-item" href="" id="edit_nav"> Edit Profile</a>
+					  <div class="dropdown-divider"></div>
+					  <a class="dropdown-item" href="#">Something else here</a>
+					</div>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+				  </li>
+				</ul>
+				<div id="search_bar">
+				 <form class="form-line my-2 my-lg-0">
+				  <input class="form-control mr-sm-2" type="search" autocomplete="off" placeholder="Search" aria-label="Search" id="myInput">
+				  <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
+				  
+				  <div class="result rounded" style="z-index:999;position:absolute; background-color:white;border-color:gray;width:218px;border-style:solid;border-width:thin" id="results"></div>
+				 </form>
+				</div>
+			  </div>
+            </nav>
+            {% block content %} {% endblock %}
+        </body>
+
+        <script>
+			
+			
+			function onResize() {
+				var elem = document.getElementById("myInput").style;
+				console.log(elem);
+			}
+		
+		
+		
+            function myFunction(){
+				$(window).resize(function () {
+				   onResize();
+				});
+                dict = document.cookie
+                  .split(';')
+                  .reduce((res, c) => {
+                    const [key, val] = c.trim().split('=').map(decodeURIComponent)
+                    const allNumbers = str => /^\d+$/.test(str);
+                    try {
+                      return Object.assign(res, { [key]: allNumbers(val) ?  val : JSON.parse(val) })
+                    } catch (e) {
+                      return Object.assign(res, { [key]: val })
+                    }
+                  }, {});
+                console.log(dict)
+                session=document.cookie
+                $("#edit_nav").attr("href",'/edit-profile/' + session);
+                $("#home_nav").attr("href",'/profile/' + dict['email_address']);
+                $("#BSMS_nav").attr("href",'/profile/' + dict['email_address']);
+                console.log($("#edit_nav").attr("href"));
+				
+				var typingTimer;                //timer identifier
+				var doneTypingInterval = 100;  //time in ms, 5 second for example
+
+				//on keyup, start the countdown
+				$('#myInput').on('keyup', function () {
+				  clearTimeout(typingTimer);
+				  typingTimer = setTimeout(doneTyping, doneTypingInterval);
+				});
+
+				//on keydown, clear the countdown 
+				$('#myInput').on('keydown', function () {
+				  clearTimeout(typingTimer);
+				  console.log('here');
+				});
+
+				//user is "finished typing," do something
+				function doneTyping () {
+				  var input = $("#myInput").val();
+				  var resultDropdown = $(".result");
+				  var results = document.getElementById("results");
+				  results.borderStyle = "solid";
+				  
+				  if(input.length){
+				  
+					results.borderStyle = "solid";
+					results.borderColor = "red";
+					
+					var resp_string = "";
+					  $.ajax({
+							url: '/quickQuery',
+							data: {'input' : $("#myInput").val()},
+							type: 'POST',
+							success: function(response) {
+								var resp = JSON.parse(response)['data']
+								for(index in resp) {
+								  resp_string = resp_string.concat("<a href=\"/profile/" + resp[index]['email_address'] + "\" style=\"padding-left:5px;padding-bottom:5px; color:black;text-decoration:none;\"> " + resp[index]['name'] + " </a><br>");
+								  console.log(resp[index]['email_address']);
+								}
+								resultDropdown.html(resp_string)
+								console.log(resp_string);
+							},
+							error: function(error) {
+								console.log(error);
+							}
+						});
+					  <!-- Ajax -->
+					  <!-- $.get("backend-search.php", {term: inputVal}).done(function(data){ -->
+						  <!-- // Display the returned data in browser -->
+						  <!-- resultDropdown.html(data); -->
+					  <!-- }); -->
+				  } else{
+						resultDropdown.empty();
+						<!-- results.style.borderStyle = ""; -->
+				  }
+				  
+					
+				}
+				
+				
+            }
+			
+			
+			
+			
+			
+        </script>
+        
+        {% block scripts %} {% endblock %}
+        <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

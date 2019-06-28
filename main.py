@@ -1,8 +1,9 @@
 import os
 from flask import Flask, flash, redirect, render_template, request, session, url_for
-from functionsForSql import authLogin, newUser, getData, updateInfo, posting, postingFriend, setCookie, checkSession
+from functionsForSql import authLogin, newUser, getData, updateInfo, posting, postingFriend, setCookie, checkSession, queryInput
 import random as r
-
+from google.cloud import storage
+import json
 app = Flask(__name__)
 
 @app.route("/")
@@ -49,12 +50,14 @@ def profile(email_address):
 	if cname == '' or cname == None:
 		return redirect(url_for('logIn'))
 	data = getData(email_address)
-	data['pro_pic'] = 'profiles/' + data['id'] + '/' + data['id'] + '_profile_pic.png'
-	dir_path = os.path.dirname(os.path.realpath(__file__))
-	try:
-		open(dir_path + '/static/profiles/' + data['id'] + '/' + data['id'] + '_profile_pic.png')
-	except Exception as e:
-		data['pro_pic'] = 'profiles/default/default_profile_pic.png'
+	
+	sc = storage.Client()
+	bucket = sc.get_bucket('basic-flask-bucket')
+	blob_pic = bucket.get_blob('profiles/' + data['id'] + '/' + data['id'] + '_profile_pic.png')
+	if blob_pic != None:
+		data['pro_pic'] = data['id']
+	else:
+		data['pro_pic'] = 'default'
 	
 	
 	# ################################################## #
@@ -93,6 +96,13 @@ def editProfile(cookie):
 			new_name = form['email_address']
 		return redirect(url_for('profile', email_address=new_name))
 	return render_template('edit.html', data=data)
+
+@app.route("/quickQuery", methods=['POST'])
+def query():
+	resp = queryInput(request.form['input'])
+	print(resp)
+	dump = json.dumps({'status' : 'OK', 'data' : resp})
+	return dump
 
 
 if __name__ == "__main__":

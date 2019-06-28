@@ -2,6 +2,7 @@ from sqltest import tupleBreaker, tupleToDict
 import MySQLdb as my
 import os
 from werkzeug.utils import secure_filename
+from google.cloud import storage
 
 
 def authLogin(form):
@@ -30,13 +31,10 @@ def newUser(form):
                 'select id from work.adv where name = \'%s\'' % form['name'])
             var = cursor.fetchall()
             id = tupleBreaker(var)
-            cursor.execute('insert into work.profile values (%s, \'%s\', 0, \'insert bio\', \'insert motto\', \'%s\', sha1(\'%s\'))' % (
+            cursor.execute('insert into work.profile values (%s, \'%s\', 0, \'insert bio\', \'insert motto\', \'%s\', sha1(\'%s\'), \'No Session\')' % (
                 str(id), form['name'], form['email_address'], form['password']))
             conn.commit()
             conn.close()
-            id = getData(form['email_address'])['id']
-            path = os.getcwd() + '\\static\\profiles\\' + str(id)
-            os.mkdir(path)
             return True
     conn.close()
     return False
@@ -53,16 +51,17 @@ def setCookie(session, email_address):
 
 
 def checkSession(session, email_address):
-	conn = my.connect(host='35.225.44.78', user='app', passwd='')
-	cursor = conn.cursor()
-	cursor.execute(
-	'select * from work.profile where email_address = \'%s\'' % email_address)
-	data = tupleToDict(cursor.fetchall())
-	print(data['session'] == session)
-	return data['session'] == session
+    conn = my.connect(host='35.225.44.78', user='app', passwd='')
+    cursor = conn.cursor()
+    cursor.execute(
+        'select * from work.profile where email_address = \'%s\'' % email_address)
+    data = tupleToDict(cursor.fetchall())
+    print(data['session'] == session)
+    return data['session'] == session
     # data['friends'] = getFriendsOf(data['id'])
     # data['posts'] = getPosts(data['id'])
     # conn.close()
+
 
 def getData(email_address):
     conn = my.connect(host='35.225.44.78', user='app', passwd='')
@@ -103,25 +102,31 @@ def updateInfo(form, files, id):
                     cursor.execute(
                         "update work.profile set name=\'%s\' where id=%s" % (form[key], id))
                     cursor.execute("SET FOREIGN_KEY_CHECKS=1")
-                # Edge case, return the edit page with an alert
             else:
                 if key == 'age':
                     cursor.execute(
                         "update work.profile set %s=%s where id=%s" % (key, form[key], id))
-                else:
+                elif key == 'password':
+                    # try:
+                    #     if 
+                    pass
+                elif key != 'password'and key != 'new_password' and key != 'new_password_confirm':
                     cursor.execute(
                         "update work.profile set %s=\"%s\" where id=%s" % (key, form[key], id))
-    try:
-        file = files['pro_pic']
-        if 'png' in file.filename or 'jpg' in file.filename:
-            filename = str(id) + '_profile_pic.png'
-            dir_path = os.getcwd()
-            path = dir_path + '\\static\\profiles\\' + str(id) + '\\'
-            file.save(os.path.join(path, filename))
-    except Exception as e:
-        print(e)
     conn.commit()
     conn.close()
+    try:
+        photo = files['pro_pic']
+        name = photo.filename.lower()
+        print(name)
+        if 'png' in name or 'jpg' in name or 'jpeg' in name:
+            sc = storage.Client()
+            bucket = sc.get_bucket('basic-flask-bucket')
+            blob = bucket.blob('profiles/' + id + '/' +
+                               id + '_profile_pic.png')
+            blob.upload_from_file(photo)
+    except Exception as e:
+        print(e)
 
 
 def getFriendsOf(id):
@@ -163,6 +168,31 @@ def postingFriend(profile, poster, content):
     cursor.execute(sql)
     conn.commit()
     conn.close()
+
+
+def queryInput(input):
+    conn = my.connect(host='35.225.44.78', user='app', passwd='')
+    cursor = conn.cursor()
+    cursor.execute('use work')
+    sql = 'select id, name, email_address from profile where name like \'%%%s%%\' or soundex(\'%s\') = soundex(name) limit 10' % (
+        input, input)
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    resp = []
+    for person in data:
+        arr = {}
+        count = 0
+        for val in person:
+            if count == 0:
+                arr['id'] = val
+            if count == 1:
+                arr['name'] = val
+            if count == 2:
+                arr['email_address'] = val
+            count += 1
+        resp.append(arr)
+    conn.close()
+    return resp
 
 
 def main():
