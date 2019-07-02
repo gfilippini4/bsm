@@ -1,116 +1,125 @@
 {% extends "base_template.html" %}
 {% block content %}
 <div class="row" style="padding-top:5%;padding-bottom:5%">
-				<div class="card" style="width: 50rem;
+	<div class="card" style="width: 50rem;
 				margin: 0 auto;
 				float: none;
 				margin-bottom: 10px;">
-					<div class="card-body">
-						<h5 class="card-title">Edit Account Information</h5>
-						<form action="" method="post" enctype="multipart/form-data">
-					
-							<hr>
-							<h6 class="card-title">Password Section</h6>
-						
-							<!-- Password Section -->
-							<div class="input-group form-group">
-								<div class="input-group-prepend">
-									<span class="input-group-text"><i class="fas fa-key"></i> Old Password</span>
-								</div>
-								<input type="password" autocomplete="off" class="form-control" placeholder="Current Password" name="password" value="{{request.form.password}}">
-							</div>
-							
-							<div class="input-group form-group">
-								<div class="input-group-prepend">
-									<span class="input-group-text"><i class="fas fa-key"></i> New Password </span>
-								</div>
-								<input type="password" class="form-control" placeholder="New Password" name="new_password" value="{{request.form.new_password}}">
-							</div>
-							
-							<div class="input-group form-group">
-								<div class="input-group-prepend">
-									<span class="input-group-text"><i class="fas fa-key"></i> Confirm Password</span>
-								</div>
-								<input type="password" class="form-control" placeholder="Re-Type New Password" name="new_password_confirm" value="{{request.form.new_password_confirm}}">
-							</div>
-							<hr>
-							<!-- Edit Name -->
-							<h6> Personal Information </h6>
-							<div class="input-group form-group">
-								<div class="input-group-prepend">
-										<span class="input-group-text"><i class="fas fa-key"></i> Update Name</span>
-								</div>
-								<input type="text" class="form-control mr-sm-2" placeholder="{{data['name']}}" name="name" value="{{request.form.name}}">
-							</div>
-							<!-- Age Section -->
-							<div class="input-group form-group">
-								<div class="input-group-prepend">
-										<span class="input-group-text"><i class="fas fa-key"></i> Update Age</span>
-								</div>
-								<input type="text" class="form-control mr-sm-2" placeholder="{{data['age']}}" name="age" value="{{request.form.age}}">
-							</div>
-							
-							<!-- Bio Section -->
-							<div class="input-group form-group">
-								<div class="input-group-prepend">
-										<span class="input-group-text"><i class="fas fa-key"></i> Update Bio</span>
-								</div>
-								<textarea type="text" rows="5" cols="80" id="TITLEB" placeholder="{{data['bio']}}" name="bio" value="{{request.form.bio}}"></textarea>
-								<!-- <input type="text" class="form-control mr-sm-2" placeholder="{{data['bio']}}" name="bio" value="{{request.form.bio}}"> -->
-							</div>
-							
-							<!-- Motto Section -->
-							<div class="input-group form-group">
-								<div class="input-group-prepend">
-										<span class="input-group-text"><i class="fas fa-key"></i> Update Motto</span>
-								</div>
-								<textarea type="text" rows="5" cols="80" id="TITLEM" placeholder="{{data['motto']}}" name="motto" value="{{request.form.motto}}"></textarea>
-								<!-- <input type="text" class="form-control mr-sm-2" placeholder="{{data['motto']}}" name="motto" value="{{request.form.motto}}"> -->
-							</div>
-							
-							<!-- Email Section -->
-							<div class="input-group form-group">
-								<div class="input-group-prepend">
-										<span class="input-group-text"><i class="fas fa-key"></i> Update email</span>
-								</div>
-								<input type="text" class="form-control mr-sm-2" placeholder="{{data['email_address']}}" name="email_address" value="{{request.form.email_address}}">
-							</div>
-							
-							<!-- Profile Pic Section -->
-							<div class="input-group form-group">
-							  <div class="input-group-prepend">
-								<span class="input-group-text" id="inputGroupFileAddon01">Upload Profile Picture</span>
-							  </div>
-							  <div class="custom-file">
-								<input type="file" class="custom-file-input" accept="image/*" id="inputGroupFile01"
-								  aria-describedby="inputGroupFileAddon01" name="pro_pic" value="{{request.form.pro_pic}}">
-								<label class="custom-file-label" for="inputGroupFile01">Choose File</label>
-							  </div>
-							</div>
+		<div class="card-body">
+			<h5 class="card-title">Edit Account Information</h5>
+			<form action="" method="post" enctype="multipart/form-data">
 
-							<!-- Banner Pic Section -->
-							<div class="input-group form-group">
-								<div class="input-group-prepend">
-								  <span class="input-group-text" id="inputGroupFileAddon02">Upload Banner Picture</span>
-								</div>
-								<div class="custom-file">
-								  <input type="file" class="custom-file-input" accept="image/*" id="inputGroupFile02"
-									aria-describedby="inputGroupFileAddon02" name="banner_pic" value="{{request.form.banner_pic}}">
-								  <label class="custom-file-label" for="inputGroupFile02">Choose File</label>
-								</div>
-							</div>
-							
-							
-							<div class="form-group">
-								<input type="submit" value="Update Info" class="btn btn-primary">
-							</div>
-						</form>
+				<hr>
+				<h6 class="card-title">Password Section</h6>
+
+				<!-- Password Section -->
+				<div class="input-group form-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text"><i class="fas fa-key"></i> Old Password</span>
+					</div>
+					<input type="password" autocomplete="off" class="form-control" placeholder="Current Password"
+						name="password" value="{{request.form.password}}">
+				</div>
+
+				<div class="input-group form-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text"><i class="fas fa-key"></i> New Password </span>
+					</div>
+					<input type="password" class="form-control" placeholder="New Password" name="new_password"
+						value="{{request.form.new_password}}">
+				</div>
+
+				<div class="input-group form-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text"><i class="fas fa-key"></i> Confirm Password</span>
+					</div>
+					<input type="password" class="form-control" placeholder="Re-Type New Password"
+						name="new_password_confirm" value="{{request.form.new_password_confirm}}">
+				</div>
+				<hr>
+				<!-- Edit Name -->
+				<h6> Personal Information </h6>
+				<div class="input-group form-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text"><i class="fas fa-key"></i> Update Name</span>
+					</div>
+					<input type="text" class="form-control mr-sm-2" placeholder="{{data['name']}}" name="name"
+						value="{{request.form.name}}">
+				</div>
+				<!-- Age Section -->
+				<div class="input-group form-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text"><i class="fas fa-key"></i> Update Age</span>
+					</div>
+					<input type="text" class="form-control mr-sm-2" placeholder="{{data['age']}}" name="age"
+						value="{{request.form.age}}">
+				</div>
+
+				<!-- Bio Section -->
+				<div class="input-group form-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text"><i class="fas fa-key"></i> Update Bio</span>
+					</div>
+					<textarea type="text" rows="5" cols="80" id="TITLEB" placeholder="{{data['bio']}}" name="bio"
+						value="{{request.form.bio}}"></textarea>
+					<!-- <input type="text" class="form-control mr-sm-2" placeholder="{{data['bio']}}" name="bio" value="{{request.form.bio}}"> -->
+				</div>
+
+				<!-- Motto Section -->
+				<div class="input-group form-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text"><i class="fas fa-key"></i> Update Motto</span>
+					</div>
+					<textarea type="text" rows="5" cols="80" id="TITLEM" placeholder="{{data['motto']}}" name="motto"
+						value="{{request.form.motto}}"></textarea>
+					<!-- <input type="text" class="form-control mr-sm-2" placeholder="{{data['motto']}}" name="motto" value="{{request.form.motto}}"> -->
+				</div>
+
+				<!-- Email Section -->
+				<div class="input-group form-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text"><i class="fas fa-key"></i> Update email</span>
+					</div>
+					<input type="text" class="form-control mr-sm-2" placeholder="{{data['email_address']}}"
+						name="email_address" value="{{request.form.email_address}}">
+				</div>
+
+				<!-- Profile Pic Section -->
+				<div class="input-group form-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text" id="inputGroupFileAddon01">Upload Profile Picture</span>
+					</div>
+					<div class="custom-file">
+						<input type="file" class="custom-file-input" accept="image/*" id="inputGroupFile01"
+							aria-describedby="inputGroupFileAddon01" name="pro_pic" value="{{request.form.pro_pic}}">
+						<label class="custom-file-label" for="inputGroupFile01">Choose File</label>
 					</div>
 				</div>
-			</div>
-		</div>
-		<div class="container" style="padding-top:10%">
-		Powered By Garrett Filippini
+
+				<!-- Banner Pic Section -->
+				<div class="input-group form-group">
+					<div class="input-group-prepend">
+						<span class="input-group-text" id="inputGroupFileAddon02">Upload Banner Picture</span>
+					</div>
+					<div class="custom-file">
+						<input type="file" class="custom-file-input" accept="image/*" id="inputGroupFile02"
+							aria-describedby="inputGroupFileAddon02" name="banner_pic"
+							value="{{request.form.banner_pic}}">
+						<label class="custom-file-label" for="inputGroupFile02">Choose File</label>
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<input type="submit" value="Update Info" class="btn btn-primary">
+				</div>
+			</form>
 		</div>
 	</div>
+</div>
+</div>
+<div class="container" style="padding-top:10%">
+	Powered By Garrett Filippini
+</div>
+</div>
 {% endblock %}

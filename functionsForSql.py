@@ -213,15 +213,12 @@ def getNotifications(session):
     and wp.session=\'%s\'""" % (session))
     data = cursor.fetchall()
     val = []
-    print(data)
     for first in data:
         for second in first:
             cursor.execute("select id, name, email_address from work.profile where id=%s"% (str(second)))
             tup = cursor.fetchall()
             temp_dict = ((x, y, z) for x,y,z in tup)
             val += temp_dict
-
-    print(val)
     conn.close()
     return val
 

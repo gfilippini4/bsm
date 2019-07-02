@@ -1,102 +1,105 @@
 {% extends "base_template.html" %}
 {% block content %}
 <div class="row">
-		<div class="col-lg-3" style="padding-top:2%">
-			<div style="height:200px;">
-				<img style="max-width:200px; max-height:200px;border-radius:50px;border-style:solid;border-color:black;border-width:thick" class="responsive mx-auto d-block" id="profile_picture">
-			</div>
-			<div id="aboutData">
-				<h4>About {{data['name']}}:</h4>
-				<hr>
-				<p>Age: {{data['age']}}</p>
-				<p>Bio: {{data['bio']}}</p>
-				<p>Motto: {{data['motto']}}</p>
-				<p>Email: {{data['email_address']}}</p>
-				{% if not data.authenticated and not data.friend_zone and not data.requested and not data.they_requested %}
-				<form action="/addFriend" method="post" enctype="multipart/form-data" id="form1">
-					<input type="hidden" id="email_address" name="email_address" value="{{data.email_address}}">
-					<input type="hidden" id="id" name="id" value="{{data.id}}">
-				</form>
-				<button type="submit" form="form1" value="Submit">Add Friend</button>
-				{% endif %}
-				{% if data.requested %}
-				<strong>Friend Request Sent!</strong>
-				{% endif %}
-
-				{% if data.they_requested %}
-				<form action="/acceptFriend" method="post" enctype="multipart/form-data" id="accept">
-					<input type="hidden" id="email_address" name="email_address" value="{{data.email_address}}">
-					<input type="hidden" id="id" name="id" value="{{data.id}}">
-				</form>
-				<form action="/declineFriend" method="post" enctype="multipart/form-data" id="decline">
-					<input type="hidden" id="email_address" name="email_address" value="{{data.email_address}}">
-					<input type="hidden" id="id" name="id" value="{{data.id}}">
-				</form>
-				<button type="submit" form="accept" value="Submit">Accept</button>
-				<button type="submit" form="decline" value="Submit">Decline</button>
-				{% endif %}
-				
-				
-			</div>
-			<div class="text-center">
-				<h4>Friends of {{data['name']}}</h4>
-				<hr>
-				{% for n in data['friends'] %}
-				<p><a href="/profile/{{n['email_address']}}" style="color:black;">{{n['name']}}</a></p>
-				{% endfor %}
-				<hr>
-			</div>
+	<div class="col-lg-3" style="padding-top:2%">
+		<div style="height:200px;">
+			<img style="max-width:200px; max-height:200px;border-radius:50px;border-style:solid;border-color:black;border-width:thick"
+				class="responsive mx-auto d-block" id="profile_picture">
 		</div>
-
-		<div class="col">
-			<div class="jumbotron jumbotron-fluid">
-					<h1 class="display-4"><strong>{{data['name']}}</strong></h1>
-			
-			
-			</div>
+		<div id="aboutData">
+			<h4>About {{data['name']}}:</h4>
 			<hr>
+			<p>Age: {{data['age']}}</p>
+			<p>Bio: {{data['bio']}}</p>
+			<p>Motto: {{data['motto']}}</p>
+			<p>Email: {{data['email_address']}}</p>
+			{% if not data.authenticated and not data.friend_zone and not data.requested and not data.they_requested %}
+			<form action="/addFriend" method="post" enctype="multipart/form-data" id="form1">
+				<input type="hidden" id="email_address" name="email_address" value="{{data.email_address}}">
+				<input type="hidden" id="id" name="id" value="{{data.id}}">
+			</form>
+			<button type="submit" form="form1" value="Submit">Add Friend</button>
+			{% endif %}
+			{% if data.requested %}
+			<strong>Friend Request Sent!</strong>
+			{% endif %}
 
-			<div class="card" style="width:95%;
+			{% if data.they_requested %}
+			<form action="/acceptFriend" method="post" enctype="multipart/form-data" id="accept">
+				<input type="hidden" id="email_address" name="email_address" value="{{data.email_address}}">
+				<input type="hidden" id="id" name="id" value="{{data.id}}">
+			</form>
+			<form action="/declineFriend" method="post" enctype="multipart/form-data" id="decline">
+				<input type="hidden" id="email_address" name="email_address" value="{{data.email_address}}">
+				<input type="hidden" id="id" name="id" value="{{data.id}}">
+			</form>
+			<button type="submit" form="accept" value="Submit">Accept</button>
+			<button type="submit" form="decline" value="Submit">Decline</button>
+			{% endif %}
+
+
+		</div>
+		<div class="text-center">
+			<h4>Friends of {{data['name']}}</h4>
+			<hr>
+			{% for n in data['friends'] %}
+			<p><a href="/profile/{{n['email_address']}}" style="color:black;">{{n['name']}}</a></p>
+			{% endfor %}
+			<hr>
+		</div>
+	</div>
+
+	<div class="col">
+		<div class="jumbotron jumbotron-fluid">
+			<h1 class="display-4"><strong>{{data['name']}}</strong></h1>
+
+
+		</div>
+		<hr>
+
+		<div class="card" style="width:95%;
 			height:auto;
 			margin: 0 auto;
 			float: none;
 			margin-bottom: 10px;">
-				<div class="card-body">
-					<h5 class="card-title">Make a Post</h5>
-					<form action="" method="post" enctype="multipart/form-data">
-						<div class="input-group form-group">
-							<textarea style="width:100%; height:auto;resize: none;" type="text" rows="5" id="TITLEB" placeholder="Enter a something you would like to post here!" name="content" value="{{request.form.content}}"></textarea>
-							<!-- <input type="text" class="form-control mr-sm-2" placeholder="{{data['bio']}}" name="bio" value="{{request.form.bio}}"> -->
-						</div>
-						<input type="hidden" name="poster_id" value="{{data['id']}}" />
-						<input type="hidden" name="type" value="posting" />
-						<div class="form-group">
-							<input style="float:right;" type="submit" value="Post" class="btn btn-primary">
-						</div>
-					</form>
-				</div>
+			<div class="card-body">
+				<h5 class="card-title">Make a Post</h5>
+				<form action="" method="post" enctype="multipart/form-data">
+					<div class="input-group form-group">
+						<textarea style="width:100%; height:auto;resize: none;" type="text" rows="5" id="TITLEB"
+							placeholder="Enter a something you would like to post here!" name="content"
+							value="{{request.form.content}}"></textarea>
+						<!-- <input type="text" class="form-control mr-sm-2" placeholder="{{data['bio']}}" name="bio" value="{{request.form.bio}}"> -->
+					</div>
+					<input type="hidden" name="poster_id" value="{{data['id']}}" />
+					<input type="hidden" name="type" value="posting" />
+					<div class="form-group">
+						<input style="float:right;" type="submit" value="Post" class="btn btn-primary">
+					</div>
+				</form>
 			</div>
-			{% for item in data['posts'] %}
-			<div class="card" style="width:90%;
+		</div>
+		{% for item in data['posts'] %}
+		<div class="card" style="width:90%;
 			height:auto;
 			margin: 0 auto;
 			float: left;
 			margin-bottom: 10px;">
-				<div class="card-body" style="background:lightblue">
-					<h5 class="card-title">{{item[1]}} Posted on {{data['name']}}'s Wall:</h5>
-					<textarea readonly style="width:100%; height:auto;resize: none;" type="text"> {{item[3]}} </textarea>
-					<div style="float:right">
-						<p>{{item[2]}}</p>
-					</div>
+			<div class="card-body" style="background:lightblue">
+				<h5 class="card-title">{{item[1]}} Posted on {{data['name']}}'s Wall:</h5>
+				<textarea readonly style="width:100%; height:auto;resize: none;" type="text"> {{item[3]}} </textarea>
+				<div style="float:right">
+					<p>{{item[2]}}</p>
 				</div>
 			</div>
-			{% endfor %}
 		</div>
+		{% endfor %}
 	</div>
+</div>
 
-	<div class="row">
+<div class="row">
 
-	</div>
+</div>
 </div>
 <div class="container" style="padding-top:10%">
 	Powered By Garrett Filippini
@@ -106,51 +109,47 @@
 {% block scripts %}
 
 <script>
-window.addEventListener('DOMContentLoaded', initLoadFunc);
+	window.addEventListener('DOMContentLoaded', initLoadFunc);
 
-function isMobileDevice() {
-    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
-};
+	function isMobileDevice() {
+		return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+	};
 
-function initLoadFunc() {
-	var text = $("#text");
-	var tempImageStore = new Image();
+	function initLoadFunc() {
+		var text = $("#text");
+		var tempImageStore = new Image();
 
-	var check = isMobileDevice();
-	if(check) {
-		text.text("true");
-	} else {
-		text.text("false");
-	}
-
-	console.log(check)
-
-	tempImageStore.onload = function(ev) {
-		var img = document.getElementById('profile_picture');
-		var height = ev.target.height;
-		var width = ev.target.width;
-		console.log(width);
-		console.log(height);
-		if(width > 2000 && width >= height && !check){
-			img.classList.add('rotateimg90');
+		var check = isMobileDevice();
+		if (check) {
+			text.text("true");
+		} else {
+			text.text("false");
 		}
-		img.src = tempImageStore.src;
 
+		tempImageStore.onload = function (ev) {
+			var img = document.getElementById('profile_picture');
+			var height = ev.target.height;
+			var width = ev.target.width;
+			if (width > 2000 && width >= height && !check) {
+				img.classList.add('rotateimg90');
+			}
+			img.src = tempImageStore.src;
+
+		}
+		var ran = Math.floor(Math.random() * 100000) + 1;
+		tempImageStore.src = 'https://storage.googleapis.com/basic-flask-bucket/profiles/{{data.pro_pic}}/{{data.pro_pic}}_profile_pic.png?' + String(ran);
+		return true;
 	}
-	var ran = Math.floor(Math.random() * 100000) + 1;
-	tempImageStore.src = 'https://storage.googleapis.com/basic-flask-bucket/profiles/{{data.pro_pic}}/{{data.pro_pic}}_profile_pic.png?' + String(ran);
-	return true;
-}
 </script>
 
 <style>
-.rotateimg90 {
-  margin-top : 20px;
-  -webkit-transform:rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  transform: rotate(90deg);
-}
+	.rotateimg90 {
+		margin-top: 20px;
+		-webkit-transform: rotate(90deg);
+		-moz-transform: rotate(90deg);
+		-ms-transform: rotate(90deg);
+		-o-transform: rotate(90deg);
+		transform: rotate(90deg);
+	}
 </style>
 {% endblock %}

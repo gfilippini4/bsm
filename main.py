@@ -96,7 +96,6 @@ def profile(email_address):
 	if requested(sess_user['id'], data['id']):
 		data['requested'] = True
 	data['they_requested'] = requested(data['id'], sess_user['id'])
-	print(data['they_requested'])
 	return render_template('profile.html', data=data, random_num=r.randint(1,100000))
 	
 @app.route("/edit-profile/<cookie>", methods=['GET', 'POST'])
@@ -125,7 +124,6 @@ def query():
 
 @app.route("/addFriend", methods=['POST'])
 def addFriend():
-	# print(request.form)
 	insertIntoFriendRequest(request.cookies.get('email_address'),request.form['id'])
 	return redirect(url_for('profile', email_address=request.form['email_address']))
 
