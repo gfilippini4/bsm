@@ -10,8 +10,41 @@
 	<link rel="icon" href="{{url_for('static', filename='favicon.png')}}">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<style>
-	.col-lg-3 {background-color: lightgray;}
-    </style>
+	.col-lg-3 {
+		border-radius: 50px;
+		background: lightyellow;
+		position: relative;
+		overflow: hidden;
+	}
+	.jumbotron {
+		border-radius:25px;
+		position: relative;
+		overflow: hidden;
+		<!-- background: #5C97FF; -->
+		z-index: 999;
+	}
+	.jumbotron h1 {
+		padding: 50px;
+		padding-left:20px;
+		z-index: 2;
+		position: relative;
+		color: black;
+	} 
+	.jumbotron:before {
+		content: ' ';
+		display: block;
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0.6;
+		background-image: url('https://storage.googleapis.com/basic-flask-bucket/profiles/{{data.banner_pic}}/banner_pic/{{data.banner_pic}}_banner_pic.png?{{random_num}}');
+		background-repeat: no-repeat;
+		background-position: 50% 50%;
+		background-size: cover;
+	}
+	</style>
     {% endblock %}
 </head>
 <body onload="myFunction()">
@@ -45,11 +78,31 @@
 					<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
 				  </li>
 				</ul>
+        <ul class="navbar-nav" style="float:right; padding-right:5px;">
+        <li class="nav-item dropdown">
+          <a class="notification nav-link dropdown" id="navbarDropdown2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img style="max-width: 40px; max-height: 40px;" src="{{url_for('static', filename='bell_icon.png')}}">
+			{% if data.notifications|length > 0 %}
+			<span class="badge">{{data.notifications|length}}</span>
+			{% endif %}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
+			{% if data.notifications|length > 0 %}
+			{% for item in data.notifications %}
+			<a class="dropdown-item" href="/profile/{{item[2]}}">{{item[1]}} wants to be your friend!</a>
+			{% endfor %}
+			{% endif %}
+			{% if data.notifications|length <= 0 %}
+			<a class="dropdown-item" href="#"> No new notifications!</a>
+			{% endif %}
+          </div>
+        </li>
+      </ul>
 				<div id="search_bar">
 				 <form class="form-line my-2 my-lg-0">
 				  <input class="form-control mr-sm-2" type="search" autocomplete="off" placeholder="Search" aria-label="Search" id="myInput">
 				  <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
-				  
+
 				  <div class="result rounded" style="z-index:999;position:absolute; background-color:white;border-color:gray;width:218px;border-style:solid;border-width:thin" id="results"></div>
 				 </form>
 				</div>
@@ -59,19 +112,19 @@
         </body>
 
         <script>
-			
-			
+
+
 			function onResize() {
 				var elem = document.getElementById("myInput").style;
 				console.log(elem);
 			}
-		
-		
-		
+
+
+
             function myFunction(){
-				$(window).resize(function () {
-				   onResize();
-				});
+      				$(window).resize(function () {
+      				   onResize();
+      				});
                 dict = document.cookie
                   .split(';')
                   .reduce((res, c) => {
@@ -89,7 +142,7 @@
                 $("#home_nav").attr("href",'/profile/' + dict['email_address']);
                 $("#BSMS_nav").attr("href",'/profile/' + dict['email_address']);
                 console.log($("#edit_nav").attr("href"));
-				
+
 				var typingTimer;                //timer identifier
 				var doneTypingInterval = 100;  //time in ms, 5 second for example
 
@@ -99,7 +152,7 @@
 				  typingTimer = setTimeout(doneTyping, doneTypingInterval);
 				});
 
-				//on keydown, clear the countdown 
+				//on keydown, clear the countdown
 				$('#myInput').on('keydown', function () {
 				  clearTimeout(typingTimer);
 				  console.log('here');
@@ -111,12 +164,12 @@
 				  var resultDropdown = $(".result");
 				  var results = document.getElementById("results");
 				  results.borderStyle = "solid";
-				  
+
 				  if(input.length){
-				  
+
 					results.borderStyle = "solid";
 					results.borderColor = "red";
-					
+
 					var resp_string = "";
 					  $.ajax({
 							url: '/quickQuery',
@@ -125,7 +178,7 @@
 							success: function(response) {
 								var resp = JSON.parse(response)['data']
 								for(index in resp) {
-								  resp_string = resp_string.concat("<a href=\"/profile/" + resp[index]['email_address'] + "\" style=\"padding-left:5px;padding-bottom:5px; color:black;text-decoration:none;\"> " + resp[index]['name'] + " </a><br>");
+								  resp_string = resp_string.concat("<a class=\"custom\" href=\"/profile/" + resp[index]['email_address'] + "\" style=\"padding-left:5px;padding-bottom:5px; color:black;text-decoration:none;\"> " + resp[index]['name'] + " </a><br>");
 								  console.log(resp[index]['email_address']);
 								}
 								resultDropdown.html(resp_string)
@@ -144,20 +197,49 @@
 						resultDropdown.empty();
 						<!-- results.style.borderStyle = ""; -->
 				  }
-				  
-					
+
+
 				}
-				
-				
-            }
-			
-			
-			
-			
-			
-        </script>
-        
-        {% block scripts %} {% endblock %}
-        <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      }
+      </script>
+      <style>
+      .custom:hover {
+        background-color: lightblue;
+      }
+      .custom:active {
+        background-color: lightgray;
+      }
+
+      .notification {
+        /* background-color: #555; */
+        color: white;
+        text-decoration: none;
+        padding: 0px 10px;
+        position: relative;
+        display: inline-block;
+        /* border-radius: 2px; */
+      }
+
+      .notification:hover {
+        background: lightblue;
+      }
+      .notification:active {
+        background: lightgray;
+      }
+
+      .notification .badge {
+        position: absolute;
+        top: -3px;
+        right: -3px;
+        /* padding: 5px 10px; */
+        border-radius: 50%;
+        background: red;
+        color: white;
+      }
+      </style>
+
+
+      {% block scripts %} {% endblock %}
+      <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

@@ -54,6 +54,13 @@ def tupleBreaker(tuple):
 			info += str(items) + ' '
 		info += '\n'
 	return info
+
+def getID(tuple):
+	info = ''
+	for tuples in tuple:
+		for items in tuples:
+			info += str(items)
+	return info
 		
 def tupleToDict(tuple):
 	count = 0

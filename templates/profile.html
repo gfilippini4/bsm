@@ -2,9 +2,8 @@
 {% block content %}
 <div class="row">
 		<div class="col-lg-3" style="padding-top:2%">
-			<div style="height:200px">
-				<img
-				style="max-width:200px;max-height:200px" class="rounded responsive mx-auto d-block" id="profile_picture">
+			<div style="height:200px;">
+				<img style="max-width:200px; max-height:200px;border-radius:50px;border-style:solid;border-color:black;border-width:thick" class="responsive mx-auto d-block" id="profile_picture">
 			</div>
 			<div id="aboutData">
 				<h4>About {{data['name']}}:</h4>
@@ -13,6 +12,31 @@
 				<p>Bio: {{data['bio']}}</p>
 				<p>Motto: {{data['motto']}}</p>
 				<p>Email: {{data['email_address']}}</p>
+				{% if not data.authenticated and not data.friend_zone and not data.requested and not data.they_requested %}
+				<form action="/addFriend" method="post" enctype="multipart/form-data" id="form1">
+					<input type="hidden" id="email_address" name="email_address" value="{{data.email_address}}">
+					<input type="hidden" id="id" name="id" value="{{data.id}}">
+				</form>
+				<button type="submit" form="form1" value="Submit">Add Friend</button>
+				{% endif %}
+				{% if data.requested %}
+				<strong>Friend Request Sent!</strong>
+				{% endif %}
+
+				{% if data.they_requested %}
+				<form action="/acceptFriend" method="post" enctype="multipart/form-data" id="accept">
+					<input type="hidden" id="email_address" name="email_address" value="{{data.email_address}}">
+					<input type="hidden" id="id" name="id" value="{{data.id}}">
+				</form>
+				<form action="/declineFriend" method="post" enctype="multipart/form-data" id="decline">
+					<input type="hidden" id="email_address" name="email_address" value="{{data.email_address}}">
+					<input type="hidden" id="id" name="id" value="{{data.id}}">
+				</form>
+				<button type="submit" form="accept" value="Submit">Accept</button>
+				<button type="submit" form="decline" value="Submit">Decline</button>
+				{% endif %}
+				
+				
 			</div>
 			<div class="text-center">
 				<h4>Friends of {{data['name']}}</h4>
@@ -23,11 +47,15 @@
 				<hr>
 			</div>
 		</div>
-	
+
 		<div class="col">
-			<h1>{{data['name']}}</h1>
-			<hr>
+			<div class="jumbotron jumbotron-fluid">
+					<h1 class="display-4"><strong>{{data['name']}}</strong></h1>
 			
+			
+			</div>
+			<hr>
+
 			<div class="card" style="width:95%;
 			height:auto;
 			margin: 0 auto;
@@ -62,19 +90,17 @@
 					</div>
 				</div>
 			</div>
-			<!-- <p> {{item[3]}} </p> -->
 			{% endfor %}
 		</div>
 	</div>
-	
+
 	<div class="row">
-		
+
 	</div>
 </div>
 <div class="container" style="padding-top:10%">
 	Powered By Garrett Filippini
 </div>
-<!-- {{data}} -->
 </div>
 {% endblock %}
 {% block scripts %}
@@ -89,16 +115,16 @@ function isMobileDevice() {
 function initLoadFunc() {
 	var text = $("#text");
 	var tempImageStore = new Image();
-	
+
 	var check = isMobileDevice();
 	if(check) {
 		text.text("true");
 	} else {
 		text.text("false");
 	}
-	
+
 	console.log(check)
-	
+
 	tempImageStore.onload = function(ev) {
 		var img = document.getElementById('profile_picture');
 		var height = ev.target.height;
@@ -106,12 +132,10 @@ function initLoadFunc() {
 		console.log(width);
 		console.log(height);
 		if(width > 2000 && width >= height && !check){
-			<!-- img.style.transform = 'rotate(90deg)'; -->
-			<!-- img.style.paddingTop = '35px'; -->
 			img.classList.add('rotateimg90');
 		}
 		img.src = tempImageStore.src;
-		
+
 	}
 	var ran = Math.floor(Math.random() * 100000) + 1;
 	tempImageStore.src = 'https://storage.googleapis.com/basic-flask-bucket/profiles/{{data.pro_pic}}/{{data.pro_pic}}_profile_pic.png?' + String(ran);

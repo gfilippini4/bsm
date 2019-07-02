@@ -33,3 +33,5 @@ pyOpenSSL==19.0.0
 six==1.12.0
 SQLAlchemy==1.3.4
 Werkzeug==0.15.4
+
+gunicorn
